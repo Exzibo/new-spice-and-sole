@@ -2,13 +2,25 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Trash2, Plus, Minus, X, Ticket, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useData } from '../context/DataContext';
 import { cn } from '../lib/utils';
 
 export const CartScreen: React.FC<{ onBrowse: () => void }> = ({ onBrowse }) => {
   const { items, updateQuantity, removeFromCart, subtotal, gst, discount, total, applyCoupon, clearCart } = useCart();
+  const { placeOrder } = useData();
   const [coupon, setCoupon] = useState('');
   const [couponError, setCouponError] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+
+  const handlePlaceOrder = () => {
+    const orderItems = items.map(i => `${i.name} x${i.quantity}`).join(', ');
+    placeOrder({
+      customerName: 'Guest Customer', // In a real app, this would come from user profile
+      items: orderItems,
+      totalPrice: total
+    });
+    setOrderPlaced(true);
+  };
 
   const handleApplyCoupon = () => {
     const success = applyCoupon(coupon);
@@ -152,7 +164,7 @@ export const CartScreen: React.FC<{ onBrowse: () => void }> = ({ onBrowse }) => 
 
         <motion.button
           whileTap={{ scale: 0.95 }}
-          onClick={() => setOrderPlaced(true)}
+          onClick={handlePlaceOrder}
           className="w-full bg-saffron text-white py-5 rounded-3xl font-bold text-lg shadow-xl flex items-center justify-center gap-3"
         >
           Place Order

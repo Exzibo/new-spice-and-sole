@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, Users, Clock, Star, MapPin, CheckCircle2, Plus, Minus } from 'lucide-react';
+import { useData } from '../context/DataContext';
 import { cn } from '../lib/utils';
 
 const reservationSchema = z.object({
@@ -23,6 +24,7 @@ type ReservationForm = z.infer<typeof reservationSchema>;
 export const ReservationsScreen: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const { addReservation } = useData();
 
   const {
     register,
@@ -42,8 +44,15 @@ export const ReservationsScreen: React.FC = () => {
   const seating = watch('seating');
 
   const onSubmit = (data: ReservationForm) => {
-    console.log('Reservation Data:', data);
-    setBookingId(Math.floor(100000 + Math.random() * 900000).toString());
+    const newBookingId = Math.floor(100000 + Math.random() * 900000).toString();
+    addReservation({
+      customerName: data.fullName,
+      phone: data.phone,
+      date: data.date,
+      time: data.time,
+      guests: data.guests
+    });
+    setBookingId(newBookingId);
     setSubmitted(true);
   };
 

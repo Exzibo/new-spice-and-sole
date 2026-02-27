@@ -15,6 +15,8 @@ export interface FoodItem {
   price: number;
   category: 'Starters' | 'Main Course' | 'Drinks' | 'Desserts';
   image: string;
+  isVeg?: boolean;
+  spiceLevel?: number;
 }
 
 export type OrderStatus = 'Pending' | 'Approved' | 'Rejected';

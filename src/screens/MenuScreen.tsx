@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Minus, Info, Flame } from 'lucide-react';
-import { MENU_DATA, MenuItem } from '../data/menu';
 import { useCart } from '../context/CartContext';
+import { useData } from '../context/DataContext';
+import { FoodItem } from '../types/admin';
 import { cn } from '../lib/utils';
 
 const categories = [
-  { id: 'starters', label: 'Starters', icon: '🥗' },
-  { id: 'main', label: 'Main Course', icon: '🍛' },
-  { id: 'drinks', label: 'Drinks', icon: '🥤' },
+  { id: 'Starters', label: 'Starters', icon: '🥗' },
+  { id: 'Main Course', label: 'Main Course', icon: '🍛' },
+  { id: 'Drinks', label: 'Drinks', icon: '🥤' },
+  { id: 'Desserts', label: 'Desserts', icon: '🍰' },
 ];
 
 export const MenuScreen: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('starters');
+  const [activeCategory, setActiveCategory] = useState('Starters');
   const { items, addToCart, updateQuantity } = useCart();
+  const { menuItems } = useData();
 
-  const filteredMenu = MENU_DATA.filter((item) => item.category === activeCategory);
+  const filteredMenu = menuItems.filter((item) => item.category === activeCategory);
 
   return (
     <div className="min-h-screen pb-24">
@@ -55,7 +58,7 @@ export const MenuScreen: React.FC = () => {
   );
 };
 
-const MenuCard: React.FC<{ item: MenuItem }> = ({ item }) => {
+const MenuCard: React.FC<{ item: FoodItem }> = ({ item }) => {
   const { items, addToCart, updateQuantity } = useCart();
   const cartItem = items.find((i) => i.id === item.id);
 
@@ -76,7 +79,7 @@ const MenuCard: React.FC<{ item: MenuItem }> = ({ item }) => {
         <div className="absolute top-4 right-4 flex gap-2">
           <div className={cn(
             "w-4 h-4 rounded-full border-2",
-            item.isVeg ? "bg-green-500 border-green-200" : "bg-red-500 border-red-200"
+            item.isVeg !== false ? "bg-green-500 border-green-200" : "bg-red-500 border-red-200"
           )} />
         </div>
       </div>
@@ -95,7 +98,7 @@ const MenuCard: React.FC<{ item: MenuItem }> = ({ item }) => {
               <Flame
                 key={i}
                 size={14}
-                className={cn(i < item.spiceLevel ? "text-saffron fill-saffron" : "text-charcoal/10")}
+                className={cn(i < (item.spiceLevel || 0) ? "text-saffron fill-saffron" : "text-charcoal/10")}
               />
             ))}
           </div>

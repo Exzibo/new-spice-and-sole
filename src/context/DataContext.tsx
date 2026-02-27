@@ -14,16 +14,24 @@ interface DataContextType {
   deleteOrder: (id: string) => void;
   updateReservationStatus: (id: string, status: Reservation['status']) => void;
   deleteReservation: (id: string) => void;
+  addReservation: (reservation: Omit<Reservation, 'id' | 'status'>) => void;
   updateSettings: (settings: RestaurantSettings) => void;
   addAdminUser: (user: Omit<User, 'id'>) => void;
   deleteAdminUser: (id: string) => void;
+  placeOrder: (order: Omit<Order, 'id' | 'status' | 'date'>) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const INITIAL_MENU: FoodItem[] = [
-  { id: '1', name: 'Paneer Tikka', description: 'Grilled cottage cheese', price: 299, category: 'Starters', image: 'https://picsum.photos/seed/paneer/200' },
-  { id: '2', name: 'Butter Chicken', description: 'Creamy tomato gravy chicken', price: 449, category: 'Main Course', image: 'https://picsum.photos/seed/chicken/200' },
+  { id: 's1', name: 'Paneer Tikka', description: 'Succulent paneer cubes marinated in spiced yogurt and grilled to perfection.', price: 299, category: 'Starters', isVeg: true, spiceLevel: 2, image: 'https://picsum.photos/seed/paneertikka/400/300' },
+  { id: 's2', name: 'Chicken Seekh Kebab', description: 'Minced chicken blended with aromatic spices and grilled on skewers.', price: 349, category: 'Starters', isVeg: false, spiceLevel: 2, image: 'https://picsum.photos/seed/chickenkebab/400/300' },
+  { id: 's3', name: 'Hara Bhara Kebab', description: 'Healthy and delicious spinach and green pea patties.', price: 249, category: 'Starters', isVeg: true, spiceLevel: 1, image: 'https://picsum.photos/seed/harabhara/400/300' },
+  { id: 'm1', name: 'Butter Chicken', description: 'Tender chicken in a rich, creamy tomato-based gravy.', price: 449, category: 'Main Course', isVeg: false, spiceLevel: 1, image: 'https://picsum.photos/seed/butterchicken/400/300' },
+  { id: 'm2', name: 'Dal Makhani', description: 'Slow-cooked black lentils with cream and butter.', price: 349, category: 'Main Course', isVeg: true, spiceLevel: 1, image: 'https://picsum.photos/seed/dalmakhani/400/300' },
+  { id: 'm5', name: 'Chicken Biryani', description: 'Fragrant basmati rice cooked with spiced chicken and herbs.', price: 499, category: 'Main Course', isVeg: false, spiceLevel: 2, image: 'https://picsum.photos/seed/chickenbiryani/400/300' },
+  { id: 'd1', name: 'Mango Lassi', description: 'Refreshing yogurt-based drink with sweet mango pulp.', price: 149, category: 'Drinks', isVeg: true, spiceLevel: 0, image: 'https://picsum.photos/seed/mangolassi/400/300' },
+  { id: 'd2', name: 'Masala Chai', description: 'Traditional Indian spiced tea with milk.', price: 79, category: 'Drinks', isVeg: true, spiceLevel: 0, image: 'https://picsum.photos/seed/masalachai/400/300' },
 ];
 
 const INITIAL_ORDERS: Order[] = [
@@ -65,18 +73,38 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateReservationStatus = (id: string, status: Reservation['status']) => setReservations(reservations.map(r => r.id === id ? { ...r, status } : r));
   const deleteReservation = (id: string) => setReservations(reservations.filter(r => r.id !== id));
 
+  const addReservation = (resData: Omit<Reservation, 'id' | 'status'>) => {
+    const newRes: Reservation = {
+      ...resData,
+      id: `RES${Math.floor(1000 + Math.random() * 9000)}`,
+      status: 'Pending'
+    };
+    setReservations([newRes, ...reservations]);
+  };
+
   const updateSettings = (newSettings: RestaurantSettings) => setSettings(newSettings);
 
   const addAdminUser = (user: Omit<User, 'id'>) => setAdminUsers([...adminUsers, { ...user, id: Date.now().toString() }]);
   const deleteAdminUser = (id: string) => setAdminUsers(adminUsers.filter(u => u.id !== id));
+
+  const placeOrder = (orderData: Omit<Order, 'id' | 'status' | 'date'>) => {
+    const newOrder: Order = {
+      ...orderData,
+      id: `ORD${Math.floor(1000 + Math.random() * 9000)}`,
+      status: 'Pending',
+      date: new Date().toISOString().split('T')[0]
+    };
+    setOrders([newOrder, ...orders]);
+  };
 
   return (
     <DataContext.Provider value={{
       menuItems, orders, reservations, settings, adminUsers,
       addMenuItem, updateMenuItem, deleteMenuItem,
       updateOrderStatus, deleteOrder,
-      updateReservationStatus, deleteReservation,
-      updateSettings, addAdminUser, deleteAdminUser
+      updateReservationStatus, deleteReservation, addReservation,
+      updateSettings, addAdminUser, deleteAdminUser,
+      placeOrder
     }}>
       {children}
     </DataContext.Provider>

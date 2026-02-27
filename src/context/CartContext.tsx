@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
-import { MenuItem } from '../data/menu';
+import { FoodItem } from '../types/admin';
 
-interface CartItem extends MenuItem {
+interface CartItem extends FoodItem {
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (item: MenuItem) => void;
+  addToCart: (item: FoodItem) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearCart: () => void;
@@ -25,7 +25,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [items, setItems] = useState<CartItem[]>([]);
   const [discountPercent, setDiscountPercent] = useState(0);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: FoodItem) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
