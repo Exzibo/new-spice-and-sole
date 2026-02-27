@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Poppins", sans-serif;
+  
+  --color-saffron: #FF6B00;
+  --color-gold: #FFC300;
+  --color-cream: #FFF8F0;
+  --color-charcoal: #1A1A1A;
+  --color-emerald: #2D6A4F;
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-charcoal font-sans;
+  }
+}
+
+.mandala-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l3 10 10-3-3 10 10 3-10 3 3 10-10-3-3 10-3-10-10 3 3-10-10-3 10-3-3-10 10 3z' fill='%23FF6B00' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
